@@ -6,9 +6,17 @@ A simple welcome page for BDBMego Technologies, a recently founded company that 
 
 The page will introduce the company's services and invite interested visitors to get in touch by email.
 
+## Target customers and focus
+
+People who have an idea for starting a company but have not fully worked out the product details.
+
+BDBMego mainly focuses on building the product. There is no preference between website, mobile app, and custom software projects.
+
 ## Main message
 
 Cost-effective, high-quality development using multiple AI agents, with human guidance, review, and testing.
+
+Offer a more accessible price while emphasizing quality and personal service. Keep pricing private.
 
 ## Page content
 
@@ -18,6 +26,12 @@ Cost-effective, high-quality development using multiple AI agents, with human gu
 4. An email contact section at the end.
 
 The selected copy is recorded in [PAGE_DESIGN.md](PAGE_DESIGN.md).
+
+Keep the original slogan and selected copy. Do not add a personal biography or an additional section describing the founder's involvement.
+
+## Visual direction
+
+A concise, minimal page with artistic character and moderate playfulness. Use geometric graphics, a warm off-white, charcoal, and coral palette, and one central scroll transformation that keeps the text easy to read throughout.
 
 ## Requirements
 

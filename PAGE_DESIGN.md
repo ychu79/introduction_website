@@ -6,7 +6,20 @@
 - [Bytewren](https://bytewren.com/)
 - [Built by Buffalo](https://builtbybuffalo.com/)
 
-Keep the page simple. Colors, typography, and detailed visual layout have not been agreed on yet.
+## Agreed visual direction
+
+- Keep the structure concise and minimal, with artistic character and moderate playfulness.
+- Aim for a balance between [Hello Monday](https://www.hellomonday.com/) and [ToyFight](https://toyfight.co/): Hello Monday felt too simple, while ToyFight felt too playful.
+- Use geometric graphics.
+- Use a warm palette of off-white, charcoal, and coral.
+- Make animation an important part of the experience, with one central scroll transformation.
+- Keep the text easy to read throughout the animation.
+
+Exact color shades, typography, detailed layout, and the animation sequence remain undecided.
+
+## Content boundaries
+
+Keep the original slogan and the selected copy below, with the focus on building products. Keep pricing private. Do not add a personal biography or an additional section about the founder's involvement.
 
 ## 1. Opening
 
