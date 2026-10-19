@@ -1,0 +1,24 @@
+.page {
+  display: flex;
+  min-height: 100svh;
+  max-width: 72rem;
+  margin-inline: auto;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: clamp(1.5rem, 6vw, 5rem);
+}
+
+.company {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.title {
+  max-width: 16ch;
+  margin: 0;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  line-height: 1.1;
+  text-wrap: balance;
+}
