@@ -1,0 +1,22 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+  padding-block: clamp(var(--space-16), 8vw, 7rem);
+}
+
+.title {
+  max-width: 15ch;
+  font-size: var(--text-display);
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.description {
+  max-width: 58ch;
+  color: var(--color-muted);
+  font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+  line-height: 1.7;
+}

@@ -4,12 +4,12 @@ Next.js application for the BDBMego Technologies introduction page.
 
 ## Current stage
 
-Implementation steps 1 through 4: application initialization, static output,
-centralized content/configuration, and the shared page shell. The starter contains
-a company header, section navigation, keyboard skip link, footer, and custom 404,
-TypeScript, App Router, a `src/` directory, and CSS Modules. Production builds
-export HTML, CSS, and JavaScript to `out/`. Motion is installed for the later
-animation step. The full page design, browser tests, and deployment are later
+Implementation steps 1 through 5: application initialization, static output,
+centralized content/configuration, the shared page shell, and all four content
+sections. The page includes the approved introduction, services, approach,
+three-step process, and contact invitation. Production builds export HTML, CSS,
+and JavaScript to `out/`. Responsive layout refinement, scroll animation, the
+real business email, a committed browser test suite, and deployment are later
 steps in
 [IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md).
 
@@ -96,8 +96,11 @@ relying on Next.js's runtime image optimizer.
 ## Source layout
 
 - `src/content/site.ts`: typed, approved page copy and public site settings.
-- `src/app/page.tsx`: slogan and section landmarks for working header navigation.
-- `src/app/page.module.css`: component-scoped page styles.
+- `src/app/page.tsx`: composes Hero, Services, Approach, and Contact in order.
+- `src/components/Hero.tsx`, `Services.tsx`, `Approach.tsx`, and `Contact.tsx`:
+  static page sections using the shared content/configuration.
+- `src/components/Hero.module.css` and `Sections.module.css`: introduction styles
+  and shared section, service, process, and contact styles.
 - `src/app/layout.tsx`: shared header, main region, skip link, footer, and metadata.
 - `src/app/globals.css`: design variables, reset, keyboard focus, and system font.
 - `src/components/SiteHeader.tsx` and `SiteFooter.tsx`: shared navigation and footer.
@@ -109,15 +112,16 @@ relying on Next.js's runtime image optimizer.
 Edit `src/content/site.ts` to maintain the page's content in one place:
 
 - `siteConfig` holds the company name, public business email, and public site URL.
-  `email` and `url` are explicitly `null` until real values are supplied. Future
-  contact and URL metadata components must handle these unset values without
-  rendering placeholder destinations.
+  `email` and `url` are explicitly `null` until real values are supplied. Contact
+  shows a development placeholder while the email is unset. When supplied, the
+  same address is used by the contact button and visible email link. Future URL
+  metadata must also handle the unset URL without inventing a destination.
 - `siteContent` holds the approved hero, services, approach, process, and contact
   wording from `PAGE_DESIGN.md`. Service IDs are stable identifiers; process steps
   have stable IDs and explicit `order` values.
-- The current homepage reads its company name and slogan from this module.
-  Document metadata uses the company name and the approved hero description.
-  The remaining section content will be rendered in step 5.
+- All four page sections read their approved content from this module. The
+  header/footer use its company name; document metadata uses the company name
+  and approved hero description.
 
 These values are public and available at build time. Keep credentials out of this
 file. Rebuild the static export after changing content or settings.
@@ -126,8 +130,10 @@ file. Rebuild the static export after changing content or settings.
 
 The header links to `/#services`, `/#approach`, and `/#contact`; its company link
 returns to `/#top`. These homepage-prefixed URLs also work from the 404 page.
-The section destinations currently show only their headings. Step 5 will add
-their full approved content.
+The hero's call to action links to `#contact`. Each section has a unique ID and
+labelled heading; service descriptions use `article` elements with `h3` headings,
+and the process uses an ordered list. All sections render at build time and need
+no client component or browser JavaScript to show their content.
 
 Press Tab on a freshly loaded page to reveal **Skip to content**, then Enter to
 move focus to the main region. Interactive links have visible focus outlines.
@@ -143,7 +149,7 @@ configured to serve it with HTTP 404 for unknown paths. During development,
 Next.js handles that routing automatically.
 
 No backend, credentials, external font downloads, or UI framework are required.
-A committed Playwright test suite is planned for step 10. Step 4 browser checks
+A committed Playwright test suite is planned for step 10. Step 4 and 5 browser checks
 used isolated tooling in the ignored `.tools/` directory.
 
 The scaffold's optional ESLint tooling was removed: its dependency chain included
@@ -200,3 +206,27 @@ initialization stage.
   unknown paths, matching the intended static hosting behavior.
 
 Firefox, Safari/WebKit, and real mobile devices were not tested in this step.
+
+## Step 5 validation
+
+- `npm run typecheck` and `npm run build`: passed; the homepage remains a static
+  export.
+- Eight check groups passed using temporary Playwright tooling and Microsoft
+  Edge 155.0.4283.62:
+  - All approved paragraphs, section order, unique IDs, and heading hierarchy.
+  - Three semantic service blocks and the ordered three-step process.
+  - An explicit development placeholder and no email links while email is unset.
+  - Keyboard skip link, visible focus, hero contact link, and header navigation.
+  - Visible content and no horizontal overflow at 320, 375, 768, and 1440px.
+  - Full content and contact navigation with JavaScript disabled and reduced
+    motion enabled.
+  - Contact renders two matching email links when configured; null, empty, and
+    whitespace values render the placeholder. This isolated render used an
+    in-memory fixture; no test address was saved to source or the export.
+  - No browser runtime errors.
+- Visually reviewed desktop and mobile screenshots. Temporary QA script, JSON
+  results, and screenshots are in the ignored `.tools/step5-*` files.
+
+Browser coverage in this step is limited to Microsoft Edge. The real email
+address is still required for launch; the current contact placeholder is
+intentional.

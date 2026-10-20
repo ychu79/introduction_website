@@ -1,0 +1,120 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+  padding-block: var(--space-16);
+  border-top: 1px solid var(--color-border);
+}
+
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3) var(--space-6);
+}
+
+.number {
+  color: var(--color-focus);
+  font-size: var(--text-small);
+  font-variant-numeric: tabular-nums;
+}
+
+.heading h2 {
+  max-width: 24ch;
+  font-size: var(--text-heading);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.description {
+  max-width: 64ch;
+  color: var(--color-muted);
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.services {
+  display: grid;
+  gap: var(--space-8);
+  width: 100%;
+}
+
+.service {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.service + .service {
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-border);
+}
+
+.service h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.process {
+  display: grid;
+  gap: var(--space-6);
+  margin: 0;
+  padding-inline-start: var(--space-8);
+  font-size: 1.125rem;
+}
+
+.process li {
+  padding-inline-start: var(--space-3);
+}
+
+.process li::marker {
+  color: var(--color-focus);
+  font-variant-numeric: tabular-nums;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  max-width: 100%;
+  min-height: 48px;
+  padding: var(--space-4) var(--space-6);
+  background: var(--color-text);
+  color: var(--color-background);
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.action:hover,
+.action:focus-visible {
+  background: var(--color-focus);
+}
+
+.contactActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  max-width: 100%;
+}
+
+.email {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.placeholder {
+  max-width: 64ch;
+  border-inline-start: 3px solid var(--color-accent);
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-muted);
+  font-size: var(--text-small);
+}
