@@ -4,11 +4,11 @@ Next.js application for the BDBMego Technologies introduction page.
 
 ## Current stage
 
-Implementation steps 1 through 5: application initialization, static output,
+Implementation steps 1 through 6: application initialization, static output,
 centralized content/configuration, the shared page shell, and all four content
-sections. The page includes the approved introduction, services, approach,
+sections, and responsive styling. The page includes the approved introduction, services, approach,
 three-step process, and contact invitation. Production builds export HTML, CSS,
-and JavaScript to `out/`. Responsive layout refinement, scroll animation, the
+and JavaScript to `out/`. Scroll animation, the
 real business email, a committed browser test suite, and deployment are later
 steps in
 [IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md).
@@ -230,3 +230,35 @@ Firefox, Safari/WebKit, and real mobile devices were not tested in this step.
 Browser coverage in this step is limited to Microsoft Edge. The real email
 address is still required for launch; the current contact placeholder is
 intentional.
+
+## Step 6 responsive layout and validation
+
+The layout starts with stacked sections. At 48rem, services and process steps
+use three columns; at 60rem, the hero, approach, and contact use wider layouts.
+The content container is capped at 72rem, with fluid gutters, type sizes, and
+section spacing. The existing system font and warm palette are retained.
+The decorative hero artwork reserves a square and does not capture pointer
+events. Its scroll transformation belongs to step 7.
+
+- `npm run typecheck` and `npm run build`: passed.
+- Nine check groups passed against the static export in Microsoft Edge
+  155.0.4283.62 using the existing temporary Playwright tooling:
+  - Layouts at 320, 375, 768, 960, and 1440px: no horizontal overflow or
+    collisions between hero artwork and content.
+  - 200% root text size at 320, 375, 768, and 1440px, including the focused
+    skip link: content remains visible without horizontal overflow.
+  - Artwork space remains reserved when the SVG is hidden.
+  - Keyboard skip link, hero contact link, and header navigation work.
+  - Hover and keyboard focus preserve link dimensions and show focus outlines.
+  - Body, muted, and accent text contrast exceeds 4.5:1.
+  - A long email wraps in the real Contact component using an in-memory fixture;
+    no test address was saved to application content.
+  - Content and navigation work without JavaScript and with reduced motion.
+  - The narrow 404 layout works, with no browser runtime errors.
+- Visually reviewed mobile, tablet, and desktop screenshots. QA scripts,
+  screenshots, and results are in the ignored `.tools/step6-*` files.
+
+Browser coverage is limited to Microsoft Edge; real devices, Firefox, and
+Safari/WebKit remain unchecked. The attempted native browser zoom automation
+did not apply its requested zoom level. Enlarged-text and narrow-viewport
+checks passed, but manual 200% and 400% browser zoom review remains outstanding.

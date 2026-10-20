@@ -3,7 +3,7 @@ import styles from "./Sections.module.css";
 
 export default function Approach() {
   return (
-    <section className={styles.section} id="approach" aria-labelledby="approach-heading">
+    <section className={`${styles.section} ${styles.approach}`} id="approach" aria-labelledby="approach-heading">
       <div className={styles.heading}>
         <span className={styles.number} aria-hidden="true">02</span>
         <h2 id="approach-heading">{siteContent.approach.heading}</h2>

@@ -1,13 +1,21 @@
 .hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: var(--layout-gap);
+  padding-block: var(--section-space);
+}
+
+.copy {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-8);
-  padding-block: clamp(var(--space-16), 8vw, 7rem);
+  gap: clamp(1.5rem, 3vw, 2rem);
+  min-width: 0;
 }
 
 .title {
-  max-width: 15ch;
+  max-width: 12ch;
   font-size: var(--text-display);
   line-height: 1.04;
   letter-spacing: -0.055em;
@@ -15,8 +23,34 @@
 }
 
 .description {
-  max-width: 58ch;
+  max-width: 52ch;
   color: var(--color-muted);
-  font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+  font-size: clamp(1.125rem, 1rem + 0.25vw, 1.25rem);
   line-height: 1.7;
+}
+
+.artwork {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 18rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.artwork svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 60rem) {
+  .hero {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+
+  .artwork {
+    width: 100%;
+    max-width: 28rem;
+  }
 }

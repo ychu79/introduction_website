@@ -5,7 +5,7 @@ export default function Contact() {
   const email = siteConfig.email?.trim();
 
   return (
-    <section className={styles.section} id="contact" aria-labelledby="contact-heading">
+    <section className={`${styles.section} ${styles.contact}`} id="contact" aria-labelledby="contact-heading">
       <div className={styles.heading}>
         <span className={styles.number} aria-hidden="true">03</span>
         <h2 id="contact-heading">{siteContent.contact.heading}</h2>

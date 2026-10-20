@@ -1,17 +1,17 @@
 .section {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-8);
-  padding-block: var(--space-16);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: var(--layout-gap);
+  padding-block: var(--section-space);
   border-top: 1px solid var(--color-border);
 }
 
 .heading {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: baseline;
-  gap: var(--space-3) var(--space-6);
+  gap: clamp(0.75rem, 2vw, 1.5rem);
 }
 
 .number {
@@ -21,7 +21,7 @@
 }
 
 .heading h2 {
-  max-width: 24ch;
+  max-width: 20ch;
   font-size: var(--text-heading);
   font-weight: 500;
   letter-spacing: -0.035em;
@@ -38,36 +38,45 @@
 
 .services {
   display: grid;
-  gap: var(--space-8);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--layout-gap);
   width: 100%;
 }
 
 .service {
   display: grid;
+  align-content: start;
   gap: var(--space-3);
+  min-width: 0;
 }
 
 .service + .service {
-  padding-top: var(--space-8);
+  padding-top: var(--layout-gap);
   border-top: 1px solid var(--color-border);
 }
 
 .service h3 {
-  font-size: 1.5rem;
+  font-size: clamp(1.375rem, 1.125rem + 0.65vw, 1.75rem);
   font-weight: 500;
   letter-spacing: -0.025em;
 }
 
 .process {
   display: grid;
-  gap: var(--space-6);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--layout-gap);
+  width: 100%;
   margin: 0;
-  padding-inline-start: var(--space-8);
+  padding: 0;
   font-size: 1.125rem;
 }
 
 .process li {
+  margin-inline-start: var(--space-6);
   padding-inline-start: var(--space-3);
+  padding-block: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  overflow-wrap: anywhere;
 }
 
 .process li::marker {
@@ -79,10 +88,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-6);
+  gap: clamp(0.75rem, 2vw, 1.5rem);
   max-width: 100%;
   min-height: 48px;
-  padding: var(--space-4) var(--space-6);
+  padding: var(--space-4) clamp(1rem, 2vw, 1.5rem);
   background: var(--color-text);
   color: var(--color-background);
   font-weight: 700;
@@ -95,6 +104,10 @@
   background: var(--color-focus);
 }
 
+.action span {
+  flex: 0 0 auto;
+}
+
 .contactActions {
   display: flex;
   flex-direction: column;
@@ -104,11 +117,18 @@
 }
 
 .email {
-  display: inline-flex;
-  align-items: center;
+  display: block;
   min-height: 44px;
   max-width: 100%;
+  padding-block: var(--space-3);
   overflow-wrap: anywhere;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.email:hover,
+.email:focus-visible {
+  color: var(--color-focus);
+  text-decoration-thickness: 2px;
 }
 
 .placeholder {
@@ -117,4 +137,34 @@
   padding: var(--space-3) var(--space-4);
   color: var(--color-muted);
   font-size: var(--text-small);
+}
+
+@media (min-width: 48rem) {
+  .services,
+  .process {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .service + .service {
+    padding-top: 0;
+    border-top: 0;
+    padding-inline-start: var(--layout-gap);
+    border-inline-start: 1px solid var(--color-border);
+  }
+}
+
+@media (min-width: 60rem) {
+  .approach,
+  .contact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-16);
+  }
+
+  .approach .process {
+    grid-column: 1 / -1;
+  }
+
+  .contact .heading {
+    grid-row: span 2;
+  }
 }

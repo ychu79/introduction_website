@@ -19,4 +19,11 @@
   gap: var(--space-2);
   min-height: 44px;
   color: var(--color-text);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.inner a:hover,
+.inner a:focus-visible {
+  color: var(--color-focus);
+  text-decoration-thickness: 2px;
 }
