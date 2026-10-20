@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f7f4ee"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#262626">
+    <text x="72" y="100" font-size="28" font-weight="700">BDBMego Technologies</text>
+    <g font-size="76" font-weight="700">
+      <text x="72" y="245">Big ideas.</text>
+      <text x="72" y="335">Lean budgets.</text>
+      <text x="72" y="425">Built well.</text>
+    </g>
+    <text x="72" y="550" font-size="25" fill="#67645f">Websites / Mobile apps / Custom software</text>
+  </g>
+  <path d="M800 160h140v140H800zM964 324h140v140H964z" fill="#262626"/>
+  <circle cx="1034" cy="230" r="70" fill="#ed765f"/>
+  <circle cx="870" cy="394" r="69" fill="none" stroke="#262626" stroke-width="2"/>
+</svg>

@@ -4,12 +4,13 @@ Next.js application for the BDBMego Technologies introduction page.
 
 ## Current stage
 
-Implementation steps 1 through 8: application initialization, static output,
+Implementation steps 1 through 9: application initialization, static output,
 centralized content/configuration, the shared page shell, all four content
-sections, responsive styling, the central scroll animation, and email contact.
+sections, responsive styling, the central scroll animation, email contact,
+and production metadata/assets (production URL pending hosting).
 The page includes the approved introduction, services, approach, three-step
 process, and contact invitation. Production builds export HTML, CSS, and
-JavaScript to `out/`. Production metadata, a committed browser test suite, and
+JavaScript to `out/`. A committed browser test suite and
 deployment are later steps in
 [IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md).
 
@@ -66,6 +67,7 @@ checkouts.
 | `npm run dev` | Start the local development server. |
 | `npm run typecheck` | Check TypeScript types without emitting application files. |
 | `npm run build` | Generate the static website in `out/`. |
+| `npm run validate:release` | Require a business email and public HTTPS site root before release. |
 
 TypeScript strict checking is enabled, and the `@/*` import alias resolves to
 `src/*`.
@@ -114,8 +116,8 @@ Edit `src/content/site.ts` to maintain the page's content in one place:
 - `siteConfig` holds the company name, public business email, and public site URL.
   `email` is `bdbmego@gmail.com`; `url` remains `null` until hosting is configured.
   The same address is used by the contact button and visible email link. Contact
-  retains a development fallback if the email is cleared. Future URL
-  metadata must also handle the unset URL without inventing a destination.
+  retains a development fallback if the email is cleared. URL metadata omits
+  production links until the URL is supplied, without inventing a destination.
 - `siteContent` holds the approved hero, services, approach, process, and contact
   wording from `PAGE_DESIGN.md`. Service IDs are stable identifiers; process steps
   have stable IDs and explicit `order` values.
@@ -309,3 +311,37 @@ submission state, or delivery confirmation.
 
 The automated check intercepted activation to verify destinations; opening an
 actual configured email application remains a manual check. No email was sent.
+
+## Step 9 metadata and assets
+
+The root layout defines the final search title and approved description, plus
+Open Graph and Twitter large-image metadata once `siteConfig.url` is supplied.
+Canonical and sharing URLs use that same setting. Set it to the public HTTPS
+site root supplied by hosting in step 11, then validate and rebuild.
+
+`public/favicon.svg` repeats the page's four geometric shapes.
+`public/social-preview.png` is an optimized 1200 x 630 sharing image (about 23 KB).
+Its editable vector source is `scripts/social-preview.svg`; to regenerate it
+with the installed Sharp dependency, run from `website/`:
+
+```sh
+node -e "require('sharp')('scripts/social-preview.svg').png({compressionLevel:9,palette:true}).toFile('public/social-preview.png')"
+```
+
+`src/app/robots.ts` and `sitemap.ts` explicitly generate static files. While
+`url` is unset, robots disallows crawling, the sitemap has no URLs, and canonical
+and social tags are omitted. Once configured, robots allows crawling and links
+to the sitemap, which lists the homepage. No placeholder domain is emitted.
+
+Run `npm run validate:release` before the release build. It reads the shared
+TypeScript configuration using the supported Node.js 24 runtime, and exits
+nonzero for a missing/invalid email or missing/non-public/non-HTTPS root URL.
+Ordinary builds stay available while hosting is pending. This check validates
+configuration; it does not establish DNS, TLS, or mailbox availability.
+
+Validation: TypeScript and production export passed. The export contains the
+favicon, sharing image, robots.txt, and sitemap.xml. Temporary checks covered
+seven release configuration cases, metadata and asset responses, and the page
+in Microsoft Edge with no browser runtime errors. Desktop/mobile screenshots
+are in `.tools/step9-*.png`. Release validation currently fails as expected
+because the production URL is still unset. Broader browser QA remains step 10.

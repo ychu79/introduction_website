@@ -1,0 +1,13 @@
+import type { MetadataRoute } from "next";
+import { siteConfig } from "@/content/site";
+
+export const dynamic = "force-static";
+
+export default function robots(): MetadataRoute.Robots {
+  return siteConfig.url
+    ? {
+        rules: { userAgent: "*", allow: "/" },
+        sitemap: new URL("/sitemap.xml", siteConfig.url).href,
+      }
+    : { rules: { userAgent: "*", disallow: "/" } };
+}
