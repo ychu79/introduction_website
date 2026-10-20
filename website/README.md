@@ -4,9 +4,10 @@ Next.js application for the BDBMego Technologies introduction page.
 
 ## Current stage
 
-Implementation step 1: application initialization. The starter contains a minimal
-company page, TypeScript, App Router, a `src/` directory, and CSS Modules. Motion
-is installed for the later animation step. Static export, the full page design,
+Implementation steps 1 and 2: application initialization and static output. The
+starter contains a minimal company page, TypeScript, App Router, a `src/`
+directory, and CSS Modules. Production builds export HTML, CSS, and JavaScript to
+`out/`. Motion is installed for the later animation step. The full page design,
 browser tests, and deployment are later steps in
 [IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md).
 
@@ -61,12 +62,34 @@ checkouts.
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Start the local development server. |
-| `npm run build` | Compile the application for production. |
-| `npm run start` | Run the current scaffold's production server after a build. |
+| `npm run typecheck` | Check TypeScript types without emitting application files. |
+| `npm run build` | Generate the static website in `out/`. |
 
-Static export and a dedicated type-check command will be configured in step 2.
-The `start` command is for the current scaffold; it will not be the preview
-command once static export is enabled.
+TypeScript strict checking is enabled, and the `@/*` import alias resolves to
+`src/*`.
+
+## Static output
+
+From `website/`, run:
+
+```sh
+npm run typecheck
+npm run build
+```
+
+The build creates `out/index.html`, `out/404.html`, and bundled assets under
+`out/_next/`. The complete `out/` directory can be served by a static web host;
+production does not need a Node.js application server. Generated output stays
+out of version control and must be rebuilt after source changes.
+
+`next start` is incompatible with this export mode, so the scaffold's `start`
+script has been removed. Use `npm run dev` for development. The dedicated static
+preview command and browser tests will be added in step 10.
+
+Keep the application frontend-only: avoid API routes, Server Actions, and
+request-time server features. Use local SVGs for artwork. If raster images are
+added, pre-optimize them and configure them for static hosting rather than
+relying on Next.js's runtime image optimizer.
 
 ## Source layout
 
@@ -74,7 +97,7 @@ command once static export is enabled.
 - `src/app/page.module.css`: component-scoped page styles.
 - `src/app/layout.tsx`: document shell and basic metadata.
 - `src/app/globals.css`: minimal global styles and system-font fallback.
-- `next.config.ts`: Next.js configuration, ready for step 2.
+- `next.config.ts`: Next.js configuration with `output: "export"`.
 
 No backend, credentials, external font downloads, or UI framework are required.
 Playwright will be added when browser tests are introduced.
@@ -92,3 +115,13 @@ TypeScript checking and, later, browser tests.
 The build required permission to spawn worker processes outside the restricted
 development sandbox. Browser and visual checks have not been performed at this
 initialization stage.
+
+## Step 2 validation
+
+- `npm run typecheck`: passed.
+- `npm run build`: passed with static export enabled.
+- Confirmed `out/index.html` and `out/404.html` were generated.
+- Confirmed the company name and slogan are present in the exported HTML.
+- Verified all eight homepage asset references resolve to exported files:
+  two stylesheets and six JavaScript files.
+- Confirmed `out/` remains ignored by Git.
