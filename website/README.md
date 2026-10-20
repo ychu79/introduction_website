@@ -4,13 +4,13 @@ Next.js application for the BDBMego Technologies introduction page.
 
 ## Current stage
 
-Implementation steps 1 through 7: application initialization, static output,
-centralized content/configuration, the shared page shell, and all four content
-sections, responsive styling, and the central scroll animation. The page includes the approved introduction, services, approach,
-three-step process, and contact invitation. Production builds export HTML, CSS,
-and JavaScript to `out/`. The
-real business email, a committed browser test suite, and deployment are later
-steps in
+Implementation steps 1 through 8: application initialization, static output,
+centralized content/configuration, the shared page shell, all four content
+sections, responsive styling, the central scroll animation, and email contact.
+The page includes the approved introduction, services, approach, three-step
+process, and contact invitation. Production builds export HTML, CSS, and
+JavaScript to `out/`. Production metadata, a committed browser test suite, and
+deployment are later steps in
 [IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md).
 
 The approved scope and copy are in [PROJECT_PLAN.md](../PROJECT_PLAN.md) and
@@ -112,9 +112,9 @@ relying on Next.js's runtime image optimizer.
 Edit `src/content/site.ts` to maintain the page's content in one place:
 
 - `siteConfig` holds the company name, public business email, and public site URL.
-  `email` and `url` are explicitly `null` until real values are supplied. Contact
-  shows a development placeholder while the email is unset. When supplied, the
-  same address is used by the contact button and visible email link. Future URL
+  `email` is `bdbmego@gmail.com`; `url` remains `null` until hosting is configured.
+  The same address is used by the contact button and visible email link. Contact
+  retains a development fallback if the email is cleared. Future URL
   metadata must also handle the unset URL without inventing a destination.
 - `siteContent` holds the approved hero, services, approach, process, and contact
   wording from `PAGE_DESIGN.md`. Service IDs are stable identifiers; process steps
@@ -290,3 +290,22 @@ changes, and content/navigation with JavaScript disabled. No browser runtime
 errors were observed. Screenshots and the QA script are under `.tools/step7-*`.
 Cross-browser and real-device animation review remain for the production QA
 step.
+
+## Step 8 email contact and validation
+
+The public contact address is `bdbmego@gmail.com`. Both the contact button and
+selectable address link use `mailto:bdbmego@gmail.com`, sourced from
+`src/content/site.ts`. The exported page no longer shows the development
+placeholder. Contact uses the visitor's email handler, with no backend,
+submission state, or delivery confirmation.
+
+- Type checking and production static build passed.
+- Exported HTML contains both correct email links and no development placeholder.
+- Microsoft Edge checks passed at 320, 375, 768, and 1440px: no horizontal
+  overflow, selectable visible address, keyboard access, and matching link
+  activation targets. Both links also render without JavaScript.
+- Visually reviewed the mobile contact section. Temporary QA script and
+  screenshots are under `.tools/step8-*`.
+
+The automated check intercepted activation to verify destinations; opening an
+actual configured email application remains a manual check. No email was sent.

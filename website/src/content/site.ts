@@ -37,7 +37,7 @@ export type SiteContent = {
 // Public, build-time settings only. Replace null when real details are supplied.
 export const siteConfig: SiteConfig = {
   companyName: "BDBMego Technologies",
-  email: null,
+  email: "bdbmego@gmail.com",
   url: null,
 };
 
