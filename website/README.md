@@ -4,8 +4,9 @@ Next.js application for the BDBMego Technologies introduction page.
 
 ## Current stage
 
-Implementation steps 1 through 3: application initialization, static output, and
-centralized content/configuration. The starter contains a minimal company page,
+Implementation steps 1 through 4: application initialization, static output,
+centralized content/configuration, and the shared page shell. The starter contains
+a company header, section navigation, keyboard skip link, footer, and custom 404,
 TypeScript, App Router, a `src/` directory, and CSS Modules. Production builds
 export HTML, CSS, and JavaScript to `out/`. Motion is installed for the later
 animation step. The full page design, browser tests, and deployment are later
@@ -95,10 +96,12 @@ relying on Next.js's runtime image optimizer.
 ## Source layout
 
 - `src/content/site.ts`: typed, approved page copy and public site settings.
-- `src/app/page.tsx`: minimal homepage using the approved company name and slogan.
+- `src/app/page.tsx`: slogan and section landmarks for working header navigation.
 - `src/app/page.module.css`: component-scoped page styles.
-- `src/app/layout.tsx`: document shell and basic metadata.
-- `src/app/globals.css`: minimal global styles and system-font fallback.
+- `src/app/layout.tsx`: shared header, main region, skip link, footer, and metadata.
+- `src/app/globals.css`: design variables, reset, keyboard focus, and system font.
+- `src/components/SiteHeader.tsx` and `SiteFooter.tsx`: shared navigation and footer.
+- `src/app/not-found.tsx`: custom 404 page with a homepage link.
 - `next.config.ts`: Next.js configuration with `output: "export"`.
 
 ## Content and public settings
@@ -119,8 +122,29 @@ Edit `src/content/site.ts` to maintain the page's content in one place:
 These values are public and available at build time. Keep credentials out of this
 file. Rebuild the static export after changing content or settings.
 
+## Shared page shell
+
+The header links to `/#services`, `/#approach`, and `/#contact`; its company link
+returns to `/#top`. These homepage-prefixed URLs also work from the 404 page.
+The section destinations currently show only their headings. Step 5 will add
+their full approved content.
+
+Press Tab on a freshly loaded page to reveal **Skip to content**, then Enter to
+move focus to the main region. Interactive links have visible focus outlines.
+The header and footer wrap on narrow screens without a JavaScript menu.
+
+Edit the variables at the top of `src/app/globals.css` to tune the off-white,
+charcoal, and coral palette, type sizes, spacing, content width, and transition
+durations. A system font is used until a local font is selected. The shell and
+its navigation work without JavaScript or animation.
+
+The export includes the custom `out/404.html`. A production static host must be
+configured to serve it with HTTP 404 for unknown paths. During development,
+Next.js handles that routing automatically.
+
 No backend, credentials, external font downloads, or UI framework are required.
-Playwright will be added when browser tests are introduced.
+A committed Playwright test suite is planned for step 10. Step 4 browser checks
+used isolated tooling in the ignored `.tools/` directory.
 
 The scaffold's optional ESLint tooling was removed: its dependency chain included
 an unpatched `braces` advisory (GHSA-vfj7-8cjw-p6xm). The planned validation uses
@@ -154,3 +178,25 @@ initialization stage.
 - Confirmed the email and public URL are `null`.
 - Checked that the exported homepage and metadata use the shared content and
   contain no placeholder email or canonical links.
+
+## Step 4 validation
+
+- `npm run typecheck` and `npm run build`: passed.
+- Eight browser check groups passed against the exported site in Microsoft Edge
+  155.0.4283.62 using a temporary Playwright installation:
+  - Homepage content, document language, and semantic header/main/footer regions.
+  - Keyboard skip link, visible focus outline, and focus transfer to main content.
+  - All header section links, company link, and footer return-to-top link.
+  - No horizontal overflow at 320, 375, 768, and 1440px viewport widths.
+  - Text contrast: body 13.79:1, muted text 5.37:1, accent text 5.54:1.
+  - Visible content and working navigation with JavaScript disabled and reduced
+    motion enabled.
+  - Custom 404 returned with HTTP 404, correct title, homepage return link, and
+    working section links back to the homepage.
+  - No browser runtime errors.
+- Visually reviewed desktop, mobile, and 404 screenshots. Temporary screenshots
+  and the JSON check report are in the ignored `.tools/` directory.
+- The local preview server was configured to return the exported `404.html` for
+  unknown paths, matching the intended static hosting behavior.
+
+Firefox, Safari/WebKit, and real mobile devices were not tested in this step.
