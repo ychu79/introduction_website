@@ -4,11 +4,11 @@ Next.js application for the BDBMego Technologies introduction page.
 
 ## Current stage
 
-Implementation steps 1 through 6: application initialization, static output,
+Implementation steps 1 through 7: application initialization, static output,
 centralized content/configuration, the shared page shell, and all four content
-sections, and responsive styling. The page includes the approved introduction, services, approach,
+sections, responsive styling, and the central scroll animation. The page includes the approved introduction, services, approach,
 three-step process, and contact invitation. Production builds export HTML, CSS,
-and JavaScript to `out/`. Scroll animation, the
+and JavaScript to `out/`. The
 real business email, a committed browser test suite, and deployment are later
 steps in
 [IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md).
@@ -238,7 +238,7 @@ use three columns; at 60rem, the hero, approach, and contact use wider layouts.
 The content container is capped at 72rem, with fluid gutters, type sizes, and
 section spacing. The existing system font and warm palette are retained.
 The decorative hero artwork reserves a square and does not capture pointer
-events. Its scroll transformation belongs to step 7.
+events. Step 7 adds its scroll transformation.
 
 - `npm run typecheck` and `npm run build`: passed.
 - Nine check groups passed against the static export in Microsoft Edge
@@ -262,3 +262,31 @@ Browser coverage is limited to Microsoft Edge; real devices, Firefox, and
 Safari/WebKit remain unchecked. The attempted native browser zoom automation
 did not apply its requested zoom level. Enlarged-text and narrow-viewport
 checks passed, but manual 200% and 400% browser zoom review remains outstanding.
+
+## Step 7 scroll experience and validation
+
+The four hero shapes rotate, shrink, and move inward as the opening section
+scrolls away. Scrolling back reverses the transformation. The sequence uses
+the existing section height, with no scroll interception or sticky runway.
+
+- `ScrollExperience.tsx` owns the hero region ref and Motion's `useScroll` and
+  `useReducedMotion` hooks. Hero copy passes through its `children` slot from
+  the server component; other sections remain server components.
+- `ScrollArtwork.tsx` maps scroll progress to transform values without React
+  state updates on each scroll event. The phase, travel, rotation, and scale
+  arrays at the top of the file define the sequence.
+- `ScrollExperience.module.css` owns the responsive hero grid and reserved
+  artwork space. Below 60rem, translation and rotation use 45% of the desktop
+  movement. Reduced motion disables transforms in both the hook and CSS.
+- Text and static SVG artwork render in the exported HTML, including when
+  JavaScript is disabled. Decorative graphics are hidden from assistive
+  technology and cannot capture pointer events.
+
+Validation: type checking and static production build passed. Temporary
+Playwright checks in Microsoft Edge passed for forward/reverse scrolling,
+resizing across 320, 375, 768, 960, and 1440px, artwork containment, horizontal
+overflow, section jumps, direct `#contact` loading, live reduced-motion
+changes, and content/navigation with JavaScript disabled. No browser runtime
+errors were observed. Screenshots and the QA script are under `.tools/step7-*`.
+Cross-browser and real-device animation review remain for the production QA
+step.
