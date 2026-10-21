@@ -39,10 +39,23 @@ A concise, minimal page with artistic character and moderate playfulness. Use ge
 - Keep the website frontend-only, without backend interaction.
 - Keep the page simple; the company is new and has no work examples yet.
 
+## Hosting and domain
+
+- Host the static export on Cloudflare Pages using the Free plan within its limits.
+- Connect the GitHub repository so pushes or merges to `main` automatically build
+  and deploy the public website. Configure release checks as part of step 11.
+- Purchase a custom domain and connect it to Pages with HTTPS. The name and
+  registrar are not yet selected; registration and recurring renewal are separate
+  from hosting costs.
+- Keep `bdbmego@gmail.com` as the public contact address. A domain purchase does
+  not require changing the contact email or adding a mailbox service.
+
 ## Current stage
 
 The page is implemented with responsive styling, scroll animation, email contact,
 and production metadata/assets. Step 10 export verification has 29 passing browser
-checks and one documented Windows WebKit keyboard skip. Public deployment is next;
-the production URL and remaining manual QA coverage are recorded in
+checks and one documented Windows WebKit keyboard skip. Step 11 is next:
+Cloudflare Pages setup, GitHub integration, and domain purchase/connection.
+These deployment tasks are pending, and the production URL is still unset.
+Remaining manual QA coverage is recorded in
 [website/README.md](website/README.md).

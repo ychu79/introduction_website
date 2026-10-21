@@ -4,7 +4,13 @@
 
 Implement and publish the website defined in [PROJECT_PLAN.md](PROJECT_PLAN.md) and [PAGE_DESIGN.md](PAGE_DESIGN.md). Refer to those files for copy, visual direction, and scope; this plan covers the code, verification, and deployment work.
 
-The steps below are proposed implementation choices. Execute them in order, with the page working before adding animation. This is still a planning document; no application code has been created.
+The application is implemented through step 10, with production URL configuration
+pending deployment. Browser verification recorded 29 passing tests and one explicit
+Windows WebKit keyboard skip; remaining manual coverage is documented in
+[website/README.md](website/README.md#step-10-production-export-verification).
+Step 11 is next: Cloudflare Pages hosting, GitHub automatic deployments, and a
+purchased custom domain. Hosting setup, repository connection, and domain purchase
+are not yet complete.
 
 ## Technical baseline
 
@@ -14,6 +20,9 @@ The steps below are proposed implementation choices. Execute them in order, with
 - Motion for React for scroll-linked animation; SVG/CSS for graphics.
 - npm and a committed lockfile.
 - Playwright for a small set of browser smoke tests.
+- Cloudflare Pages Free plan for static hosting, connected to GitHub with `main`
+  as the production branch.
+- A purchased custom domain; the domain name and registrar remain to be selected.
 
 ## Step 1 — Initialize the application
 
@@ -155,19 +164,62 @@ The steps below are proposed implementation choices. Execute them in order, with
 
 ## Step 11 — Configure and execute public deployment
 
-The proposed route is Sites static hosting. The application remains portable; confirm the hosting destination and any account/cost requirements before provisioning it.
+The selected route is Cloudflare Pages with its built-in GitHub integration.
+Use the Free plan within its limits; domain registration and renewal are separate
+costs. The current Free plan includes 500 builds per month. Verify current limits
+and the selected domain's registration and renewal prices when setting up the
+accounts. See [Pages limits](https://developers.cloudflare.com/pages/platform/limits/).
 
-1. Obtain the business email and hosting access if still missing. A custom domain is optional for the first public release.
-2. Check for an existing `website/.openai/hosting.json` project ID. Reuse it if present; otherwise register the Site once and persist the returned ID with `static.directory` set to `out`.
-3. Obtain the expected public URL and update the site configuration before the release build.
-4. Run release validation and the production checks. Through the Sites workflow, build and package the matching source version using the supported build helper; do not mix an old export with newer source.
-5. Save the verified version. Configure public access for the requested launch and deploy that saved version using the public-compatible operation.
-6. Wait for successful deployment and record the deployed version, source commit, and public URL.
-7. Open the URL in a signed-out session and verify the page, assets, navigation, email links, and mobile layout.
-8. If a custom domain is supplied, configure the host-provided DNS records without disturbing email records. Wait for HTTPS, update URL metadata, rebuild, and redeploy.
-9. If the chosen hosting account cannot serve the site publicly, report the restriction and select another static host before calling the task complete.
+1. Obtain access to the user's Cloudflare account and the existing GitHub
+   repository. Select a domain and registrar, review the exact purchase and
+   renewal terms with the user, and complete registration in the user's account.
+   The public contact email is already configured as `bdbmego@gmail.com`.
+2. Create a Cloudflare **Pages** project through Git integration, authorize access
+   to the intended repository, and select `main` as the production branch. Reuse
+   an existing matching Pages project if one is found. Record its name and
+   assigned `pages.dev` URL. Follow the
+   [Git integration guide](https://developers.cloudflare.com/pages/get-started/git-integration/).
+3. Configure the build root as `website`, output directory as `out` relative to
+   that root, and a Node.js/npm environment matching the versions declared in
+   `website/package.json` and `.node-version`. Install using `npm ci` and the
+   committed lockfile. Use the existing static Next.js export; see Cloudflare's
+   [static Next.js guide](https://developers.cloudflare.com/pages/framework-guides/nextjs/deploy-a-static-nextjs-site/)
+   and [build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/).
+4. Set `siteConfig.url` to the selected production HTTPS origin before the release
+   build. A first deployment may use the assigned `pages.dev` URL while domain
+   setup is pending; replace it with the chosen custom-domain origin for launch.
+   The configured URL controls canonical, social-sharing, robots, and sitemap output.
+5. Configure the production build command to run
+   `npm run validate:release && npm run typecheck && npm run build`.
+   Add a GitHub Actions check for type checking, building, and Playwright tests
+   against the export, installing the required browsers and system dependencies
+   on the runner. Configure required checks on pull requests into `main` where
+   supported by the repository's plan. Verify the check actually blocks merges;
+   Cloudflare's Git integration alone does not wait for unrelated GitHub tests.
+   If required-check enforcement is unavailable, record that limitation and run
+   the checks before each production push. Check GitHub Actions usage allowances
+   separately before enabling paid runner usage.
+6. Enable automatic production deployments from `main`. Use other branches for
+   preview deployments as needed. Verify a push or merge triggers the expected
+   build and deployment, and that a failed production build leaves the previous
+   successful deployment live. Record the successful deployment and Git commit.
+7. Add the purchased domain through the Pages project's Custom domains settings.
+   For an apex domain, configure the domain as a Cloudflare zone with Cloudflare
+   nameservers; follow the supplied DNS instructions and preserve any existing
+   email records. Wait for domain verification and HTTPS. Follow the
+   [custom-domain guide](https://developers.cloudflare.com/pages/configuration/custom-domains/).
+8. Choose one canonical hostname (apex or `www`), update `siteConfig.url`, and
+   push the release through the checked deployment flow. Configure redirects
+   from any alternate hostname and the production `pages.dev` address as
+   appropriate. Verify redirects preserve paths and do not loop.
+9. Open the custom-domain URL while signed out. Verify HTTPS, content, assets,
+   navigation, email links, mobile layout, metadata, sitemap, robots, and an
+   unknown path returning the custom page with HTTP 404. Record remaining manual
+   coverage from step 10 rather than implying it has been completed.
 
-**Result:** the verified site is accessible at a public HTTPS URL without signing in. Deployment should follow the installed [Sites workflow](C:/Users/45086/.codex/plugins/cache/openai-curated-remote/sites/1.0.2-remix-b.1/skills/sites/SKILL.md).
+**Result:** the verified site is publicly accessible at the purchased domain over
+HTTPS, with future changes to `main` automatically built and deployed by
+Cloudflare Pages. Local edits alone do not change the public site.
 
 ## Step 12 — Document maintenance and hand off
 
@@ -175,13 +227,22 @@ The proposed route is Sites static hosting. The application remains portable; co
 
 1. Record the required Node.js version and commands for installation, development, type checking, building, testing, and local export preview.
 2. Document the content/configuration file, shared style variables, and animation components.
-3. Explain how to rebuild and redeploy after changing the email, copy, or domain.
-4. Record the production URL and deployment procedure without storing credentials.
-5. Explain how to redeploy a previous verified version if a future release fails.
+3. Explain the GitHub pull-request/check/merge workflow and how pushes to `main`
+   trigger Cloudflare Pages builds after email, copy, or domain changes.
+4. Record the production URL, Pages project, repository/branch, build settings,
+   DNS setup, registrar, and renewal responsibility without storing credentials.
+5. Document [Cloudflare Pages rollback](https://developers.cloudflare.com/pages/configuration/rollbacks/)
+   to a previous successful production deployment, then revert or fix the source
+   in GitHub so the next automatic deployment does not reintroduce the problem.
 6. Report what was implemented, what was tested, the public URL, and any remaining limitations.
 
 **Result:** the site can be maintained and redeployed without reconstructing this conversation.
 
 ## Completion criteria
 
-The work is complete when the exported site implements the two source documents, passes the relevant checks, has functioning email links and scroll behavior, and is accessible publicly. A local preview or private deployment is an intermediate result.
+The work is complete when the exported site implements the two source documents,
+passes the relevant checks with limitations recorded, has functioning email links
+and scroll behavior, and is accessible publicly at the purchased custom domain
+over HTTPS. GitHub-to-Cloudflare automatic deployment must be verified and the
+maintenance/rollback procedure documented. A local preview or a temporary
+provider URL before custom-domain setup is an intermediate result.

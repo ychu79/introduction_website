@@ -15,7 +15,12 @@
 - Make animation an important part of the experience, with one central scroll transformation.
 - Keep the text easy to read throughout the animation.
 
-Exact color shades, typography, detailed layout, and the animation sequence remain undecided.
+The current implementation uses an off-white (#f7f4ee), charcoal (#262626), and
+coral (#ed765f) palette with an Arial/Helvetica/system sans-serif stack. Sections
+stack on narrow screens and use wider layouts where space permits. The four hero
+shapes rotate, shrink, and move inward on scroll, with reduced movement on mobile
+and a static state for reduced motion. These choices are implemented and remain
+adjustable during visual review.
 
 ## Content boundaries
 
@@ -59,4 +64,4 @@ Tell us a little about your idea, the problem you want to solve, and any timelin
 
 **Button:** Email us about your project
 
-**Your business email address** (not supplied yet)
+**Business email:** bdbmego@gmail.com
