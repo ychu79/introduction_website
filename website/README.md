@@ -170,6 +170,8 @@ Make content changes in `src/content/site.ts`; shared design variables live in
    builds and deploys the new commit automatically. Local edits and local
    commits alone do not publish changes. GitHub checks and Cloudflare builds run
    independently; required branch checks must enforce the pre-merge gate.
+   `main` requires the `Verify production export` check on an up-to-date branch,
+   including for administrators; force pushes and branch deletion are disabled.
 5. In Cloudflare, open Workers & Pages → `bdbmego-intro` → Deployments. Confirm
    success and the source commit, then verify the public homepage, contact,
    metadata, `/robots.txt`, `/sitemap.xml`, and a missing path returning HTTP 404.
@@ -216,6 +218,19 @@ do not store account credentials or API tokens in this repository.
 
 The step records below describe the configuration and coverage at each stage.
 Earlier references to unset email/URL values are historical.
+
+### Production release validation
+
+- Release configuration, TypeScript, and the Cloudflare-mode build passed locally.
+- Local production browser suite: 32 passed, 1 documented Windows WebKit
+  keyboard skip. Canonical/social URLs, robots allowing crawling, and the
+  homepage sitemap are covered by the added release test.
+- GitHub branch protection was configured and read back successfully for `main`.
+- Public deployment verification and the final release commit are recorded in
+  the release pull request and Cloudflare deployment history.
+- Native browser zoom, real mobile devices, Safari/macOS keyboard behavior, and
+  opening an installed mail application remain outside the verified coverage.
+  No failing release was deliberately deployed to production to test recovery.
 
 ## Shared page shell
 
