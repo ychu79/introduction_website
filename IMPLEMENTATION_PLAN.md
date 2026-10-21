@@ -4,13 +4,12 @@
 
 Implement and publish the website defined in [PROJECT_PLAN.md](PROJECT_PLAN.md) and [PAGE_DESIGN.md](PAGE_DESIGN.md). Refer to those files for copy, visual direction, and scope; this plan covers the code, verification, and deployment work.
 
-The application is implemented through step 10, with production URL configuration
-pending deployment. Browser verification recorded 29 passing tests and one explicit
-Windows WebKit keyboard skip; remaining manual coverage is documented in
-[website/README.md](website/README.md#step-10-production-export-verification).
-Step 11 is next: Cloudflare Pages hosting, GitHub automatic deployments, and a
-purchased custom domain. Hosting setup, repository connection, and domain purchase
-are not yet complete.
+The application is hosted on Cloudflare Pages project `bdbmego-intro`, connected
+to GitHub, with the purchased domain `bdbmego.com` and its `www` hostname active.
+The production configuration uses `https://bdbmego.com`. Steps 11–12 finish
+release verification, GitHub checks, and maintenance handoff; current validation
+and limitations are recorded in [website/README.md](website/README.md).
+The owner has deferred the optional hostname redirects.
 
 ## Technical baseline
 
@@ -22,7 +21,7 @@ are not yet complete.
 - Playwright for a small set of browser smoke tests.
 - Cloudflare Pages Free plan for static hosting, connected to GitHub with `main`
   as the production branch.
-- A purchased custom domain; the domain name and registrar remain to be selected.
+- Custom domain `bdbmego.com`, purchased through Cloudflare by the owner.
 
 ## Step 1 — Initialize the application
 
@@ -209,9 +208,10 @@ accounts. See [Pages limits](https://developers.cloudflare.com/pages/platform/li
    email records. Wait for domain verification and HTTPS. Follow the
    [custom-domain guide](https://developers.cloudflare.com/pages/configuration/custom-domains/).
 8. Choose one canonical hostname (apex or `www`), update `siteConfig.url`, and
-   push the release through the checked deployment flow. Configure redirects
-   from any alternate hostname and the production `pages.dev` address as
-   appropriate. Verify redirects preserve paths and do not loop.
+   push the release through the checked deployment flow. The selected canonical
+   origin is `https://bdbmego.com`; hostname and provider-address redirects are
+   deferred at the owner's request. If enabled later, verify redirects preserve
+   paths and do not loop.
 9. Open the custom-domain URL while signed out. Verify HTTPS, content, assets,
    navigation, email links, mobile layout, metadata, sitemap, robots, and an
    unknown path returning the custom page with HTTP 404. Record remaining manual

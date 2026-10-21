@@ -9,6 +9,7 @@
   "packageManager": "npm@11.19.1",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/validate-hosted-build.mjs",
     "build": "next build",
     "typecheck": "tsc --noEmit",
     "preview": "serve out -l tcp://127.0.0.1:4173 --no-clipboard",
