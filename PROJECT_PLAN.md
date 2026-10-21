@@ -41,4 +41,8 @@ A concise, minimal page with artistic character and moderate playfulness. Use ge
 
 ## Current stage
 
-Discuss and document the page content and design before making application code changes.
+The page is implemented with responsive styling, scroll animation, email contact,
+and production metadata/assets. Step 10 export verification has 29 passing browser
+checks and one documented Windows WebKit keyboard skip. Public deployment is next;
+the production URL and remaining manual QA coverage are recorded in
+[website/README.md](website/README.md).

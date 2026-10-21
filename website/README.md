@@ -4,14 +4,14 @@ Next.js application for the BDBMego Technologies introduction page.
 
 ## Current stage
 
-Implementation steps 1 through 9: application initialization, static output,
+Implementation steps 1 through 10: application initialization, static output,
 centralized content/configuration, the shared page shell, all four content
 sections, responsive styling, the central scroll animation, email contact,
-and production metadata/assets (production URL pending hosting).
+production metadata/assets (production URL pending hosting), and production
+export browser tests (manual coverage limitations are recorded below).
 The page includes the approved introduction, services, approach, three-step
 process, and contact invitation. Production builds export HTML, CSS, and
-JavaScript to `out/`. A committed browser test suite and
-deployment are later steps in
+JavaScript to `out/`. Public deployment is the next step in
 [IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md).
 
 The approved scope and copy are in [PROJECT_PLAN.md](../PROJECT_PLAN.md) and
@@ -67,6 +67,9 @@ checkouts.
 | `npm run dev` | Start the local development server. |
 | `npm run typecheck` | Check TypeScript types without emitting application files. |
 | `npm run build` | Generate the static website in `out/`. |
+| `npm run preview` | Serve `out/` at http://127.0.0.1:4173 with real 404 responses. |
+| `npm run test:browsers` | Install Playwright Chromium, Firefox, and WebKit. |
+| `npm run test:e2e` | Test an already-built export in all three browser engines. |
 | `npm run validate:release` | Require a business email and public HTTPS site root before release. |
 
 TypeScript strict checking is enabled, and the `@/*` import alias resolves to
@@ -87,8 +90,9 @@ production does not need a Node.js application server. Generated output stays
 out of version control and must be rebuilt after source changes.
 
 `next start` is incompatible with this export mode, so the scaffold's `start`
-script has been removed. Use `npm run dev` for development. The dedicated static
-preview command and browser tests will be added in step 10.
+script has been removed. Use `npm run dev` for development and `npm run preview`
+to inspect the production export. Rebuild after source changes before previewing
+or testing. The preview binds to loopback and does not use an SPA fallback.
 
 Keep the application frontend-only: avoid API routes, Server Actions, and
 request-time server features. Use local SVGs for artwork. If raster images are
@@ -151,7 +155,7 @@ configured to serve it with HTTP 404 for unknown paths. During development,
 Next.js handles that routing automatically.
 
 No backend, credentials, external font downloads, or UI framework are required.
-A committed Playwright test suite is planned for step 10. Step 4 and 5 browser checks
+The Playwright suite is in `tests/home.spec.ts`. Step 4 and 5 browser checks
 used isolated tooling in the ignored `.tools/` directory.
 
 The scaffold's optional ESLint tooling was removed: its dependency chain included
@@ -345,3 +349,71 @@ seven release configuration cases, metadata and asset responses, and the page
 in Microsoft Edge with no browser runtime errors. Desktop/mobile screenshots
 are in `.tools/step9-*.png`. Release validation currently fails as expected
 because the production URL is still unset. Broader browser QA remains step 10.
+
+## Step 10 production export verification
+
+From `website/`, after installing dependencies:
+
+```sh
+npm run test:browsers
+npm run typecheck
+npm run build
+npm run test:e2e
+```
+
+Playwright starts and stops the static preview server automatically. Stop any
+manual preview on port 4173 first; tests deliberately refuse to reuse an existing
+server. `test:e2e` does not rebuild. Use `npm run test:e2e -- --project=chromium`
+to run one engine, or `npx playwright show-report` to inspect the HTML report.
+Reports, screenshots, and failure traces are ignored under `playwright-report/`
+and `test-results/`. Browser setup follows the
+[Playwright browser installation guide](https://playwright.dev/docs/browsers).
+
+In this Windows checkout, browsers were installed inside the ignored project
+dependencies. Set this environment variable from `website/` before installing
+or running browser tests to use that location:
+
+```powershell
+$env:PLAYWRIGHT_BROWSERS_PATH = "$PWD\node_modules\.cache\ms-playwright"
+```
+
+Fresh checkouts can instead omit the variable for both commands to use
+Playwright's standard browser cache. Reinstall browsers after upgrading
+Playwright or removing the chosen cache.
+
+Validation on October 20, 2026:
+
+- Type checking and the production static build passed.
+- Playwright 1.64.1: **29 passed, 1 explicitly skipped**, with no failing tests.
+  Engines: Chromium 156.0.8078.4, Firefox 157.0, and WebKit 27.2 on Windows.
+- Tests cover approved content and heading order, section navigation and direct
+  contact loading, configured email destinations, keyboard skip-link behavior,
+  layouts at 320/375/768/960/1440px, 200% root text size, focused skip-link
+  visibility, JavaScript-disabled content/navigation, forward/reverse animation,
+  live reduced-motion changes, artwork containment, assets, and real custom 404s.
+- The Windows WebKit keyboard skip-link test is explicitly skipped. In an
+  isolated plain HTML reproduction, Tab focused inputs/buttons but skipped
+  links, and Alt+Tab did not resolve it. Other WebKit checks pass, including
+  programmatic focus and visible skip-link layout. This is not a claim that
+  Safari keyboard behavior has been verified. See the related
+  [Playwright keyboard discussion](https://github.com/microsoft/playwright/issues/5609).
+- Visually reviewed desktop/mobile layouts, WebKit tablet layout, and sampled
+  scroll states. Text and artwork remain separate, and the artwork stays inside
+  its reserved region. Chromium sampling at 375px and 1440px recorded zero
+  layout-shift sum through load and scroll samples. This is a local observation,
+  not field performance data or a real-device smoothness measurement.
+- Computed body, muted, and accent text contrast: 13.79:1, 5.37:1, and 5.54:1.
+  The system font stack requires no font downloads. Additional local visual
+  samples and the review script are in ignored `.tools/step10-*` files.
+- npm installation audit reported zero vulnerabilities. A scoped `serve`
+  override selects patched `compression` >=1.8.2 within version 1; the preview
+  server was tested with that override.
+
+Remaining manual coverage: native 200%/400% browser zoom, Safari/macOS keyboard
+navigation, real iOS/Android touch scrolling and animation smoothness, and
+opening a configured email application. Enlarged-text and narrow-viewport
+checks do not substitute for native browser zoom. No email was sent.
+
+The next implementation step is public deployment (step 11). The production URL
+is still unset, so release validation remains intentionally blocked until
+hosting supplies it. Step 12 will finish deployment and rollback documentation.
