@@ -38,7 +38,7 @@ export type SiteContent = {
 export const siteConfig: SiteConfig = {
   companyName: "BDBMego Technologies",
   email: "bdbmego@gmail.com",
-  url: null,
+  url: "https://bdbmego.com",
 };
 
 // Approved wording from PAGE_DESIGN.md; keep this as the shared content source.

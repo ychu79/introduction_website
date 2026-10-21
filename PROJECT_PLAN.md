@@ -44,9 +44,11 @@ A concise, minimal page with artistic character and moderate playfulness. Use ge
 - Host the static export on Cloudflare Pages using the Free plan within its limits.
 - Connect the GitHub repository so pushes or merges to `main` automatically build
   and deploy the public website. Configure release checks as part of step 11.
-- Purchase a custom domain and connect it to Pages with HTTPS. The name and
-  registrar are not yet selected; registration and recurring renewal are separate
-  from hosting costs.
+- The owner purchased `bdbmego.com` through Cloudflare and connected both the apex
+  and `www` hostnames to the Pages project `bdbmego-intro` over HTTPS. Domain
+  registration and recurring renewal are separate from hosting costs.
+- Use `https://bdbmego.com` as the canonical URL. The optional `www` redirect is
+  deferred at the owner's request.
 - Keep `bdbmego@gmail.com` as the public contact address. A domain purchase does
   not require changing the contact email or adding a mailbox service.
 
@@ -54,8 +56,8 @@ A concise, minimal page with artistic character and moderate playfulness. Use ge
 
 The page is implemented with responsive styling, scroll animation, email contact,
 and production metadata/assets. Step 10 export verification has 29 passing browser
-checks and one documented Windows WebKit keyboard skip. Step 11 is next:
-Cloudflare Pages setup, GitHub integration, and domain purchase/connection.
-These deployment tasks are pending, and the production URL is still unset.
-Remaining manual QA coverage is recorded in
+checks and one documented Windows WebKit keyboard skip at that stage. Cloudflare
+Pages and both public hostnames are now set up. The release adds canonical URL
+configuration, crawler metadata verification, and GitHub browser checks.
+Deployment, maintenance, rollback instructions, and remaining QA coverage are in
 [website/README.md](website/README.md).

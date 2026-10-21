@@ -4,15 +4,13 @@ Next.js application for the BDBMego Technologies introduction page.
 
 ## Current stage
 
-Implementation steps 1 through 10: application initialization, static output,
-centralized content/configuration, the shared page shell, all four content
-sections, responsive styling, the central scroll animation, email contact,
-production metadata/assets (production URL pending hosting), and production
-export browser tests (manual coverage limitations are recorded below).
-The page includes the approved introduction, services, approach, three-step
-process, and contact invitation. Production builds export HTML, CSS, and
-JavaScript to `out/`. Public deployment is the next step in
-[IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md).
+The website is hosted publicly on Cloudflare Pages at https://bdbmego.com.
+The production configuration uses this canonical origin for search metadata,
+social sharing, robots, and sitemap output. `www.bdbmego.com` also serves the
+site; the optional hostname redirect is deferred by the owner.
+Production builds export HTML, CSS, and JavaScript to `out/`.
+Deployment and maintenance instructions for steps 11–12 are below; historical
+validation records and remaining manual coverage follow them.
 
 The approved scope and copy are in [PROJECT_PLAN.md](../PROJECT_PLAN.md) and
 [PAGE_DESIGN.md](../PAGE_DESIGN.md).
@@ -118,7 +116,7 @@ relying on Next.js's runtime image optimizer.
 Edit `src/content/site.ts` to maintain the page's content in one place:
 
 - `siteConfig` holds the company name, public business email, and public site URL.
-  `email` is `bdbmego@gmail.com`; `url` remains `null` until hosting is configured.
+  `email` is `bdbmego@gmail.com`; `url` is `https://bdbmego.com`.
   The same address is used by the contact button and visible email link. Contact
   retains a development fallback if the email is cleared. URL metadata omits
   production links until the URL is supplied, without inventing a destination.
@@ -131,6 +129,108 @@ Edit `src/content/site.ts` to maintain the page's content in one place:
 
 These values are public and available at build time. Keep credentials out of this
 file. Rebuild the static export after changing content or settings.
+
+## Production hosting and future updates
+
+| Setting | Value |
+| --- | --- |
+| Canonical URL | https://bdbmego.com |
+| Additional hostname | https://www.bdbmego.com |
+| Cloudflare Pages project | `bdbmego-intro` |
+| Provider URL | https://bdbmego-intro.pages.dev |
+| Source repository | https://github.com/ychu79/introduction_website |
+| Production branch | `main` |
+| Build root / output | `website` / `out` |
+| Framework | Next.js static export; no OpenNext adapter |
+| Build command | `npm ci && npm run typecheck && npm run build` |
+| Build environment | `NODE_VERSION=24.22.0`, npm 11.x |
+
+The `prebuild` hook runs release validation when Cloudflare sets `CF_PAGES=1`.
+Thus the existing dashboard build command rejects missing/invalid production
+settings before `next build`. Local development builds still permit unset
+configuration; run `npm run validate:release` explicitly before a release.
+Do not enable npm's `ignore-scripts` option on the host, since that bypasses
+the hook. See [Cloudflare build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/).
+
+Make content changes in `src/content/site.ts`; shared design variables live in
+`src/app/globals.css`, and scroll behavior lives in `ScrollExperience.tsx` and
+`ScrollArtwork.tsx`. For each update:
+
+1. Create a Git branch, make the change, and install dependencies with `npm ci`
+   if the lockfile changed. Install test browsers with `npm run test:browsers`.
+2. From `website/`, run `npm run validate:release`, `npm run typecheck`,
+   `npm run build`, and `npm run test:e2e`. Inspect visual changes with
+   `npm run preview` after tests have stopped their server.
+3. Push the branch and open a pull request. The `Website checks` workflow runs
+   `Verify production export` on a standard Ubuntu GitHub runner, covering all
+   three browser engines. It also runs on pushes to `main`. Standard runners
+   for this public repository are covered by GitHub's free public-repository
+   allowance; no paid runner or billing setting is enabled by this workflow.
+4. Wait for checks to pass, then merge to `main`. Cloudflare's Git integration
+   builds and deploys the new commit automatically. Local edits and local
+   commits alone do not publish changes. GitHub checks and Cloudflare builds run
+   independently; required branch checks must enforce the pre-merge gate.
+   `main` requires the `Verify production export` check on an up-to-date branch,
+   including for administrators; force pushes and branch deletion are disabled.
+5. In Cloudflare, open Workers & Pages → `bdbmego-intro` → Deployments. Confirm
+   success and the source commit, then verify the public homepage, contact,
+   metadata, `/robots.txt`, `/sitemap.xml`, and a missing path returning HTTP 404.
+
+Do not merge a failing check. If a browser is unavailable, record that limitation
+explicitly rather than treating an unexecuted test as passed. Existing manual
+coverage limitations are listed in the Step 10 record.
+
+## Domain ownership and DNS
+
+The owner purchased `bdbmego.com` through Cloudflare and is responsible for its
+registration renewal, payment details, and account recovery. Review the renewal
+date and auto-renew setting in the registrar dashboard; these settings have not
+been independently inspected. Domain renewal is separate from Pages hosting.
+
+Both hostnames must remain registered under the Pages project's Custom domains.
+The owner's latest DNS screenshot shows proxied CNAME records:
+`bdbmego.com` → `bdbmego-intro.pages.dev`, and `www.bdbmego.com` → `bdbmego.com`.
+A CNAME is not an HTTP redirect. The owner deferred redirects; the canonical
+metadata points to the apex domain even when viewing the additional hostname.
+The provider address is also retained without a redirect.
+
+For a future domain change, first add and activate the new hostname in Pages,
+verify DNS and HTTPS, then update `siteConfig.url` and deploy through the same
+checks. Preserve any email DNS records. The public contact currently remains
+Gmail; this site does not configure an `@bdbmego.com` mailbox.
+
+## Rollback and recovery
+
+If a build fails, inspect its logs and fix the source; confirm the previous
+successful deployment still serves the public site. If a successful deployment
+has a regression, open Cloudflare Pages → Deployments → All deployments, select
+the previous known-good production deployment's menu, and choose **Rollback to
+this deployment**. Preview deployments are not rollback targets. See
+[Cloudflare rollback instructions](https://developers.cloudflare.com/pages/configuration/rollbacks/).
+
+Then revert or fix the offending commit in a new GitHub pull request, pass checks,
+and merge it so future automatic deployments retain the correction. Dashboard
+rollback does not revert Git history. Verify the public site after both actions.
+Keep the last known-good deployment and commit identifiable in the dashboard;
+do not store account credentials or API tokens in this repository.
+
+## Historical validation records
+
+The step records below describe the configuration and coverage at each stage.
+Earlier references to unset email/URL values are historical.
+
+### Production release validation
+
+- Release configuration, TypeScript, and the Cloudflare-mode build passed locally.
+- Local production browser suite: 32 passed, 1 documented Windows WebKit
+  keyboard skip. Canonical/social URLs, robots allowing crawling, and the
+  homepage sitemap are covered by the added release test.
+- GitHub branch protection was configured and read back successfully for `main`.
+- Public deployment verification and the final release commit are recorded in
+  the release pull request and Cloudflare deployment history.
+- Native browser zoom, real mobile devices, Safari/macOS keyboard behavior, and
+  opening an installed mail application remain outside the verified coverage.
+  No failing release was deliberately deployed to production to test recovery.
 
 ## Shared page shell
 
@@ -414,6 +514,5 @@ navigation, real iOS/Android touch scrolling and animation smoothness, and
 opening a configured email application. Enlarged-text and narrow-viewport
 checks do not substitute for native browser zoom. No email was sent.
 
-The next implementation step is public deployment (step 11). The production URL
-is still unset, so release validation remains intentionally blocked until
-hosting supplies it. Step 12 will finish deployment and rollback documentation.
+Production URL configuration and the deployment/rollback procedure are now
+documented above. Release validation uses `https://bdbmego.com`.

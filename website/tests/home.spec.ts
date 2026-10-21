@@ -144,3 +144,21 @@ test("export serves assets and a real custom 404", async ({ page, request }) => 
   await expectContent(page);
   expect((await request.get("/missing-step10-asset.js")).status()).toBe(404);
 });
+
+test("production metadata and crawler files use the canonical domain", async ({ page, request }) => {
+  expect(siteConfig.url).toBe("https://bdbmego.com");
+  await page.goto("/");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://bdbmego.com");
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute("content", "https://bdbmego.com");
+  for (const selector of ['meta[property="og:image"]', 'meta[name="twitter:image"]']) {
+    await expect(page.locator(selector)).toHaveAttribute("content", "https://bdbmego.com/social-preview.png");
+  }
+  const robots = await request.get("/robots.txt");
+  expect(robots.status()).toBe(200);
+  expect(await robots.text()).toContain("Allow: /");
+  expect(await robots.text()).not.toContain("Disallow: /");
+  expect(await robots.text()).toContain("Sitemap: https://bdbmego.com/sitemap.xml");
+  const sitemap = await request.get("/sitemap.xml");
+  expect(sitemap.status()).toBe(200);
+  expect(await sitemap.text()).toContain("<loc>https://bdbmego.com</loc>");
+});
